@@ -1,7 +1,5 @@
+# TORPi
 <p align="center">
-  <h1 align="center">
-    TORPi
-  <h1/>
   <p align="center">
     turn your Raspberry Pi into Tor tunneled Wifi Access Point
   <p/>
