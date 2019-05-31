@@ -7,3 +7,9 @@
     <img width="300" src="/../master/torpi_logo.png?raw=true"/>
   <p/>
 </p>
+
+# How it works ?
+
+<p align="center">
+  <img src="/../master/torpi_diagram.png?raw=true"/>
+<p/>
