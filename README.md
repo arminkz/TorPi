@@ -8,8 +8,14 @@
   <p/>
 </p>
 
-# How it works ?
+-----
+Requirements
+----
 
+- Raspberry Pi (2 or 3)
+
+- you will need two network interfaces on the Raspberry Pi, one for connecting raspberry pi itself to the internet and one wireless interface for sharing the TOR-Tunneled network. Raspberry Pi 3 has Ethernet and WiFi out-of-the-box, so you are good to go, but for Raspberry Pi 2 you will need a USB Wifi dongle.
+<br/>
 <p align="center">
   <img src="/../master/torpi_diagram.png?raw=true"/>
 <p/>
