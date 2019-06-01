@@ -28,5 +28,5 @@ Installation
 git clone https://www.github.com/arminkz/TORPi.git
 cd TORPi
 chmod +x install
-./install
+sudo ./install
 ```
