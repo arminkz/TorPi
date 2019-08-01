@@ -3,6 +3,11 @@
 # Created By Armin Kazemi
 # github.com/arminkz/TORPi
 
+if [ "$EUID" -ne 0 ]
+  then echo "Please run the script with sudo privileges."
+  exit
+fi
+
 RED='\033[0;31m'
 YEL='\033[1;33m'
 BRW='\033[0;33m'
@@ -10,9 +15,9 @@ NC='\033[0m'
 
 echo -e "\033[1;37;44m TORPi - Version 0.1 \033[0m"
 echo -e "
-       _            _            _ \033[0;31m           _        _  \033[0m    
-      /\ \         /\ \         /\ \ \033[0;31m        /\ \     /\ \ \033[0m  
-      \_\ \       /  \ \       /  \ \ \033[0;31m      /  \ \    \ \ \ \033[0m 
+       _            _            _ \033[0;31m           _        _  \033[0m
+      /\ \         /\ \         /\ \ \033[0;31m        /\ \     /\ \ \033[0m
+      \_\ \       /  \ \       /  \ \ \033[0;31m      /  \ \    \ \ \ \033[0m
       /\__ \     / /\ \ \     / /\ \ \ \033[0;31m    / /\ \ \   /\ \_\ \033[0m
      / /_ \ \   / / /\ \ \   / / /\ \_\ \033[0;31m  / / /\ \_\ / /\/_/ \033[0m
     / / /\ \ \ / / /  \ \_\ / / /_/ / / \033[0;31m / / /_/ / // / /    \033[0m
@@ -41,12 +46,13 @@ systemctl restart dhcpcd
 
 # must set /etc/hostapd/hostapd.conf
 
-#backup 
+#backup
 sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.old
 
 #must set /etc/dnsmasq.conf
 
 #set /etc/sysctl.conf -> net.ipv4.ip_forward=1
+sysctl -w net.ipv4.ip_forward=1
 sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
 
 iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
@@ -79,4 +85,3 @@ service tor status
 update-rc.d tor enable
 
 reboot
-
