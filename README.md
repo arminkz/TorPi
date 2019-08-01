@@ -9,7 +9,7 @@
 </p>
 
 Requirements
-----
+------------
 
 - Raspberry Pi (2 or 3).
 
@@ -20,3 +20,13 @@ Requirements
 <p align="center">
   <img src="/../master/torpi_diagram.png?raw=true"/>
 <p/>
+
+Installation
+------------
+
+```
+git clone https://www.github.com/arminkz/TORPi.git
+cd TORPi
+chmod +x install
+sudo ./install
+```
