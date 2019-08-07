@@ -107,5 +107,4 @@ service tor status
 
 update-rc.d tor enable
 
-echo -e "rebooting... "
-reboot
+echo -e "Done! please reboot your pi"
