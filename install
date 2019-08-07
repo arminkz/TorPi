@@ -13,7 +13,7 @@ YEL='\033[1;33m'
 BRW='\033[0;33m'
 NC='\033[0m'
 
-echo -e "\033[1;37;44m TORPi - Version 0.1 \033[0m"
+echo -e "\033[1;37;44m TORPi - Version 0.2 \033[0m"
 echo -e "
        _            _            _ \033[0;31m           _        _  \033[0m
       /\ \         /\ \         /\ \ \033[0;31m        /\ \     /\ \ \033[0m
@@ -34,23 +34,34 @@ apt install -y -qq hostapd dnsmasq
 systemctl stop hostapd
 systemctl stop dnsmasq
 
-
-#must set static ip for wlan0 in dhcpcd.conf
-
+#-- /etc/dhcpcd.conf
+echo -e "Setting static IP for raspberry pi..."
+#backup
+mv /etc/dhcpcd.conf /etc/dhcpcd.conf.old
+#set static ip for wlan0 in dhcpcd.conf
+cp template/dhcpcd /etc/dhcpcd.conf
 
 systemctl restart dhcpcd
 
-
-#must configure /etc/hostapd/hostapd.conf
+#-- /etc/hostapd/hostapd.conf
 #SSID / PASS / ...
-
-# must set /etc/hostapd/hostapd.conf
+echo -e "\033[1;33mplease specify your wifi hotspot \033[0m\n"
+read -p 'SSID: ' ssid
+read -sp 'Password (at least 8 characters): ' pass
+read -p 'Wifi Channel (1-12): ' ch
 
 #backup
-sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.old
+mv /etc/hostapd/hostapd.conf /etc/hostapd/hostapd.conf.old
+#set /etc/hostapd/hostapd.conf
+sed -e "s/\${ssid}/${ssid}/" -e "s/\${ch}/${ch}/" -e "s/\${pass}/${pass}/" template/hostapd > /etc/hostapd/hostapd.conf
 
-#must set /etc/dnsmasq.conf
+#-- /etc/dnsmasq.conf
+#backup
+mv /etc/dnsmasq.conf /etc/dnsmasq.conf.old
+#set /etc/dnsmasq.conf
+cp template/dnsmasq /etc/dnsmasq.conf
 
+echo -e "Enabling IP Forwarding..."
 #set /etc/sysctl.conf -> net.ipv4.ip_forward=1
 sysctl -w net.ipv4.ip_forward=1
 sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
@@ -58,13 +69,24 @@ sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
 iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 sh -c "iptables-save > /etc/iptables.ipv4.nat"
 
-#must add /etc/rc.local
+#-- /etc/rc.local
+#backup
+mv /etc/rc.local /etc/rc.local.old
+#add /etc/rc.local
+cp template/rc.local /etc/rc.local
 
+echo -e "Starting wifi hotspot..."
 service hostapd start
 service dnsmasq start
 
+echo -e "Installing Tor..."
 apt install -y -qq tor
+
+#-- /etc/tor/torrc
+#backup
+mv /etc/tor/torrc /etc/tor/torrc.old
 #set /etc/tor/torrc
+cp template/torrc /etc/tor/torrc
 
 iptables -F
 iptables -t nat -F
@@ -79,9 +101,11 @@ touch /var/log/tor/notices.log
 chown debian-tor /var/log/tor/notices.log
 chmod 644 /var/log/tor/notices.log
 
+echo -e "Starting Tor Service..."
 service tor start
 service tor status
 
 update-rc.d tor enable
 
+echo -e "rebooting... "
 reboot
